@@ -124,6 +124,12 @@ This system follows:
 
 ---
 
+## 📚 Documentation
+
+- [Documentation](./Packages/com.nirav.screen-navigation/Documentation~/Manual.md)
+
+---
+
 ## 📜 License
 
 This project is licensed under the MIT License.
