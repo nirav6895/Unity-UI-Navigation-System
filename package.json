@@ -2,7 +2,7 @@
   "name": "com.ng.unity-ui-navigation-system",
   "displayName": "Unity UI Navigation System",
   "version": "1.0.0",
-  "unity": "6000.3",
+  "unity": "2021.3",
   "description": "UI (Screens, Popups & Notification) Navigation framework for Unity. Handles Back functionality, Device Back Key Functionality, Screen Transitions, UI Stacking and more.",
   "author": {
     "name": "Nirav Patel",
