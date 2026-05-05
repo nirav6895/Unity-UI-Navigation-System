@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4bc65583ef13eb4ba4885655e9ee6d5, type: 3}
+  m_Name: Menu Screen And Popups
+  m_EditorClassIdentifier: Assembly-CSharp::NG.UINavigationSystem.UIPrefabListSO
+  uiPrefabs:
+  - {fileID: 5808058399643231475, guid: e4d892283b85efc41913fc4b45afbed8, type: 3}
+  - {fileID: 4485270194368823550, guid: e428ef88e2b21914ea536cad77eb7124, type: 3}
+  - {fileID: 8002516517984652679, guid: 80e4b8b4065ed2942ba0e939c761bfe8, type: 3}
+  - {fileID: 5506490531733292994, guid: 3f03314a4cba292499ee03987eb3d86e, type: 3}
+  - {fileID: 2203208847371227034, guid: d56cbc8080a8a604298758ffb7a7fa65, type: 3}
+  - {fileID: 6633874906553664477, guid: 0fec96166a846774281b9807ccbc25ef, type: 3}
+  - {fileID: 2687879409580354314, guid: d5a0a7efe58181a46aedf297c01bdc40, type: 3}
