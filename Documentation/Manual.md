@@ -13,28 +13,29 @@ This package provides a structured way to manage UI navigation in Unity using a 
 ### UI
 Base class for all kind of UI like Screen, Popup and Notification.
 
-Base class:
+Class Name:
 ```
 UI
 ```
 
 ### Screen, Popup and Notification
-All three class are derived from UI class.
-Screen represents full UI Page. (e.g., Main Menu, Store)
-Popup represents overlay UI on top of another Popup or any screen. (e.g., Exit Game Popup, Offer Popup)
-Notification is overlay UI, slides as a notification and get closed automatically after some time if not closed manually. (e.g., No Internet Notification)
+- All three class are derived from UI class.
+- Screen represents full UI Page. (e.g., Main Menu, Store)
+- Popup represents overlay UI on top of another Popup or any screen. (e.g., Exit Game Popup, Offer Popup)
+- Notification is overlay UI, slides as a notification and get closed automatically after some time if not closed manually. (e.g., No Internet Notification)
+- SNP is a base class of Screen & Popup.
 
-Base class:
+Classes and Inherited from:
 ```
-Screen
-Popup
+Screen : SNP : UI
+Popup : SNP : UI
 Notification : UI
 ```
 
 ### UINavigationManager
 Main manager who manages the navigation of UIs in the game. It uses a stack to manage the showing and hiding of UIs.
 
-Base class:
+Class Name:
 ```
 UINavigationManager
 ```
@@ -42,15 +43,15 @@ UINavigationManager
 ### UIPrefabListController
 Manages the list of UI prefabs and their instantiation.
 
-Base class:
+Class Name:
 ```
-UINavigationManager
+UIPrefabListController
 ```
 
 ### ITransition
 Manages UI transition.
 
-interface:
+Interface Name:
 ```
 ITransition
 ```
@@ -60,20 +61,26 @@ ITransition
 ## 📦 Setup
 
 1. Install Package
-2. Create a gameobject in scene and add component "UIPrefabListController". Set "UiRoot" in "UIPrefabListController". Set "UiRoot" to the "Your Preferred GameObject" where you would like to instantiate all runtime UIs and where all existing UIs are present as a child of that GameObject in scene.
+
+2. Create a gameobject in scene and add component "UIPrefabListController". Set "UiRoot" in "UIPrefabListController".Set "UiRoot" to the "Your Preferred GameObject" where you would like to instantiate all runtime UIs and where all existing UIs are present as a child of that GameObject in scene.
+
 3. Create "UI Prefab" by adding component which gets inherited from one of this component (Screen/Popup/Notification) to your UI object. (e.g., Create class HomeScreen : Screen and add HomeScreen component to root of your UI Prefab)
+
 4. Add "UI Prefabs"(means Prefab with UI Component) in list under "UIPrefabListController".
 Option 1: Simply add your "UI Prefab" in your scene under UiRoot.
 Option 2: If you want your "UI Prefab" to instantiate on demand then create Scriptable Object of "UIPrefabListSO" and add "UI Prefab" reference to that Scriptable Object and attach that Scriptable Object to "UIPrefabListController" component in scene.
+
 5. Implement a code to Show UI(Screen/Popup/Notification)
 
+- To Navigate Screen/Popup, use "UINavigationManager.Instance" with "SNP"
 ```csharp
 UINavigationManager<SNP>.Instance.ShowUI<HomeScreen>();
-UINavigationManager<Notification>.Instance.ShowUI<NoInternetNotification>();
 ```
 
-To Navigate Screen/Popup, use UINavigationManager<SNP>.Instance
-To Navigate Notification, use UINavigationManager<Notification>.Instance
+- To Navigate Notification, use "UINavigationManager.Instance" with "Notification"
+```csharp
+UINavigationManager<Notification>.Instance.ShowUI<NoInternetNotification>();
+```
 
 
 ---
