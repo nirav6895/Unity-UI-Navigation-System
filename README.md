@@ -9,6 +9,7 @@ A reusable and modular UI navigation framework for Unity, designed to manage scr
 In modern Unity games, UI navigation often becomes complex as features grow. This system provides a clean and extensible architecture to handle:
 
 - UI navigation including Screens, Popups & Notifications (stack-based)
+- Supports both In-scene UI Prefabs and On-demand UI Prefabs
 - Animated transitions for all kind of UI
 - Notifications with Auto-Close funcationality
 - Back/Close funcationality inlcuding Device Back Key
@@ -23,6 +24,11 @@ This package is built with production use-cases in mind and can be integrated in
 - Stack-based UI management (Push & Pop UI)
 - Strongly-typed API support
 - Parameter passing between UI
+
+### 🧭 On Demand UI Prefabs
+- Instantiate UI Prefabs on demand
+- Scriptable Object to maintaing list of all UI Prefabs
+- Seprate List of all UI Prefabs for different scene
 
 ### 🎬 Transitions
 - Built-in animation support
@@ -98,6 +104,7 @@ Samples/BasicNavigationDemo
 
 This demonstrates:
 - UI Navigation
+- On-Demand UI Prefabs & In-Scene UI Prefabs/GameObjects
 - Popup over Screens
 - Notifications
 - Back navigation
@@ -118,9 +125,7 @@ This system follows:
 
 ## 📈 Use Cases
 
-- 2D Games UI
-- 3D Games UI
-- AR/VR UI
+- Can be used for UI for any kind of Game. e.g., 2D games, 3D games, AR applications, VR applications etc.
 
 ---
 
