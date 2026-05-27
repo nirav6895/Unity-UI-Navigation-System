@@ -78,6 +78,8 @@ namespace NG.UINavigationSystem
         protected virtual void Awake()
         {
             Canvas = GetComponent<Canvas>();
+
+            AddOneTimeListeners();
         }
 
         /// <summary>
@@ -100,12 +102,18 @@ namespace NG.UINavigationSystem
 
         #region Virtual & Abstract Methods
         /// <summary>
+        /// Add One-Time Listeners. This is called in Awake()
+        /// </summary>
+        protected virtual void AddOneTimeListeners()
+        {
+        }
+
+        /// <summary>
         /// Add Listeners
         /// </summary>
         protected virtual void AddListeners()
         {
-            if (closeButton != null)
-                closeButton.onClick.AddListener(OnClickCloseButton);
+            if (closeButton) closeButton.onClick.AddListener(OnClickCloseButton);
         }
 
         /// <summary>
@@ -113,8 +121,7 @@ namespace NG.UINavigationSystem
         /// </summary>
         protected virtual void RemoveListeners()
         {
-            if (closeButton != null)
-                closeButton.onClick.RemoveListener(OnClickCloseButton);
+            if (closeButton) closeButton.onClick.RemoveListener(OnClickCloseButton);
         }
 
         /// <summary>
