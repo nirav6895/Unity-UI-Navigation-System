@@ -248,7 +248,10 @@ namespace NG.UINavigationSystem
             }
 
             // Notify listeners about the change
-            OnChangeCurShowingUI?.Invoke(uiStack.Peek());
+            if (uiStack.TryPeek(out TCore latestCurUI) && latestCurUI != null)
+            {
+                OnChangeCurShowingUI?.Invoke(latestCurUI);
+            }
         }
 
         /// <summary>
