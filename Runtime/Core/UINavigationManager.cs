@@ -83,6 +83,7 @@ namespace NG.UINavigationSystem
         public virtual void SetDefaultUI<T>() where T : TCore
         {
             defaultUI = GetUI<T>();
+            Logger.Log($"Set Default UI: {defaultUI.GetType()}");
         }
 
         /// <summary>
@@ -116,7 +117,7 @@ namespace NG.UINavigationSystem
             // Null Check for UIPrefabListController
             if (UIPrefabListController.Instance == null)
             {
-                Logger.LogWarning("UINavigationManager : UIPrefabListController instance is null. " +
+                Logger.LogWarning("UIPrefabListController instance is null. " +
                     "Please make sure you have added UIPrefabListController in the scene.");
                 return null;
             }
@@ -134,7 +135,7 @@ namespace NG.UINavigationSystem
             {
                 if (UIPrefabListController.Instance.uiRoot == null)
                 {
-                    Logger.LogWarning("UINavigationManager : UIPrefabListController.uiRoot is null. " +
+                    Logger.LogWarning("UIPrefabListController.uiRoot is null. " +
                         "Please make sure you have set the uiRoot in UIPrefabListController to instantiate UIs under it.");
                 }
                 ui = Object.Instantiate(uiPrefab, UIPrefabListController.Instance.uiRoot);
@@ -142,7 +143,7 @@ namespace NG.UINavigationSystem
                 return ui;
             }
 
-            Logger.LogWarning($"UINavigationManager : UI of type {typeof(T)} not found.");
+            Logger.LogWarning($"UI of type {typeof(T)} not found.");
             return null;
         }
 
@@ -164,6 +165,7 @@ namespace NG.UINavigationSystem
             // Null Check
             if (upcomingUi == null)
             {
+                Logger.LogWarning($"UI of type {typeof(T)} not found.");
                 return null;
             }
 

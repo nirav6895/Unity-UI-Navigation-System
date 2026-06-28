@@ -15,6 +15,8 @@ namespace NG.UINavigationSystem.Utilities
         /// </summary>
         internal static LogLevel LogLevel = LogLevel.Full;
 
+        private const string LOG_FORMAT = "[UINavigationSystem] {0}";
+
         /// <summary>
         /// Logs a message to the Unity console if the LogLevel is set to Full.
         /// </summary>
@@ -22,7 +24,7 @@ namespace NG.UINavigationSystem.Utilities
         public static void Log(string message)
         {
             if (LogLevel == LogLevel.Full)
-                Debug.Log(message);
+                Debug.Log(string.Format(LOG_FORMAT, message));
         }
 
         /// <summary>
@@ -31,8 +33,8 @@ namespace NG.UINavigationSystem.Utilities
         /// <param name="message">The message to log.</param>
         public static void LogWarning(string message)
         {
-            if (LogLevel >= LogLevel.WarningsAndErrors)
-                Debug.LogWarning(message);
+            if (LogLevel <= LogLevel.WarningsAndErrors)
+                Debug.LogWarning(string.Format(LOG_FORMAT, message));
         }
 
         /// <summary>
@@ -41,8 +43,8 @@ namespace NG.UINavigationSystem.Utilities
         /// <param name="message">The message to log.</param>
         public static void LogError(string message)
         {
-            if (LogLevel >= LogLevel.ErrorsOnly)
-                Debug.LogError(message);
+            if (LogLevel <= LogLevel.ErrorsOnly)
+                Debug.LogError(string.Format(LOG_FORMAT, message));
         }
     }
 
