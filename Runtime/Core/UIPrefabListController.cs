@@ -43,20 +43,14 @@ namespace NG.UINavigationSystem
 
         #region Unity Methods
         /// <summary>
-        /// On Validate, get all existing UIs in the scene under uiRoot and store them in allExistingUIs array.
-        /// </summary>
-        protected virtual void OnValidate()
-        {
-            if (uiRoot != null)
-                allExistingUIs = uiRoot.GetComponentsInChildren<Screen>(true);
-        }
-
-        /// <summary>
         /// Initialize the Instance of UIPrefabListController.
         /// </summary>
         protected virtual void Awake()
         {
             Instance = this;
+
+            if (uiRoot != null)
+                allExistingUIs = uiRoot.GetComponentsInChildren<Screen>(true);
         }
 
         /// <summary>
