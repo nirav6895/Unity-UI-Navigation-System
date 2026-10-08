@@ -1,0 +1,16 @@
+{
+    "name": "NG.UINavigationSystem.Sample",
+    "rootNamespace": "NG.UINavigationSystem.Sample",
+    "references": [
+        "GUID:768586ce5b58de44c9ca32bba98308d3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
