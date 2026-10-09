@@ -78,12 +78,14 @@ namespace NG.UINavigationSystem
         /// <summary>
         /// Set Default UI. On showing default UI, the stack will be cleared. So, it is recommended to set default UI at the start of the game.
         /// You can set any UI as default UI but it is recommended to set Screen as default UI for better user experience.
+        /// Default UI is the root of the navigation, so it is never hidden by <see cref="HideCurUI"/> (e.g. close button or device back key)
+        /// and never removed by <see cref="ReplaceUI{T}"/>.
         /// </summary>
         /// <typeparam name="T">UI type</typeparam>
         public virtual void SetDefaultUI<T>() where T : TCore
         {
             defaultUI = GetUI<T>();
-            Logger.Log($"Set Default UI: {defaultUI.GetType()}");
+            Logger.Log("Set Default UI: {0}", typeof(T));
         }
 
         /// <summary>
@@ -150,7 +152,8 @@ namespace NG.UINavigationSystem
         /// <summary>
         /// Show UI of type T. 
         /// It will first get the UI object using <see cref="GetUI{T}"/> method, then show if.
-        /// This will hide the current showing UI if the new UI is Screen,
+        /// If the new UI is Screen, it will hide the current showing Screen along with all UIs above it.
+        /// If the UI is already the current showing UI, it will only set the parameters instead of adding it to the stack again.
         /// </summary>
         /// <param name="parameters">UI parameters to pass along with showing screen</param>
         /// <param name="resetStack">Whether to reset the UI stack</param>
@@ -169,39 +172,54 @@ namespace NG.UINavigationSystem
                 return null;
             }
 
-            // If upcoming ui is Screen, then hide current ui
-            if (upcomingUi is Screen)
+            ShowUI(upcomingUi, parameters, resetStack, sortingOrder);
+
+            // Return the ui object
+            return upcomingUi;
+        }
+
+        /// <summary>
+        /// Replace Current Showing UI with UI of type T, without adding a new entry in the stack.
+        /// Going back from UI of type T will show the UI that was below the replaced UI.
+        /// Default UI is never replaced, UI of type T will be shown above it instead.
+        /// </summary>
+        /// <param name="parameters">UI parameters to pass along with showing screen</param>
+        /// <param name="sortingOrder">Sorting order for the UI</param>
+        /// <typeparam name="T">UI type</typeparam>
+        /// <returns>Current Showing UI</returns>
+        public virtual T ReplaceUI<T>(IUIParameters parameters = null, int sortingOrder = -1) where T : TCore
+        {
+            // Get the UI object
+            T upcomingUi = GetUI<T>();
+
+            // Null Check
+            if (upcomingUi == null)
             {
-                // Close current ui if available
-                if (uiStack.TryPeek(out TCore curUI) && curUI != null)
+                Logger.LogWarning($"UI of type {typeof(T)} not found.");
+                return null;
+            }
+
+            // Remove current ui from the stack, without showing the UIs below it
+            if (uiStack.TryPeek(out TCore curUI) && curUI != upcomingUi && curUI != defaultUI)
+            {
+                PopUI();
+
+                // If upcoming ui was just below the replaced ui, then it's same as going back to it
+                bool isUpcomingUiOnTop = GetCurrentShowingUI<TCore>() == upcomingUi;
+
+                // Replaced Screen was covering the UIs below it. Show them again if upcoming ui is one of them or is not going to cover them.
+                if (curUI is Screen && (isUpcomingUiOnTop || upcomingUi is not Screen))
+                    ShowTopLayer();
+
+                if (isUpcomingUiOnTop)
                 {
-                    curUI.Hide();
-                    Logger.Log($"Hide UI: {curUI.GetType()}");
+                    upcomingUi.SetParameters(parameters);
+                    OnChangeCurShowingUI?.Invoke(upcomingUi);
+                    return upcomingUi;
                 }
             }
 
-            // Reset Stack if needed
-            if (resetStack || upcomingUi == defaultUI)
-            {
-                uiStack.Clear();
-                if (sortingOrder < 0)
-                    SetDefaultSortingOrder(upcomingUi);
-            }
-            else if (curSortingOrder == -1)
-            {
-                SetDefaultSortingOrder(upcomingUi);
-            }
-
-            // Set Current Sorting Order
-            curSortingOrder = sortingOrder >= 0 ? sortingOrder : ++curSortingOrder;
-
-            // Show the new ui
-            uiStack.Push(upcomingUi);
-            upcomingUi.Show(parameters, curSortingOrder);
-            Logger.Log($"Show UI: {typeof(T)} with Sorting Order: {curSortingOrder}");
-
-            // Notify listeners about the change
-            OnChangeCurShowingUI?.Invoke(upcomingUi);
+            ShowUI(upcomingUi, parameters, false, sortingOrder);
 
             // Return the ui object
             return upcomingUi;
@@ -219,33 +237,28 @@ namespace NG.UINavigationSystem
 
         /// <summary>
         /// Hide Current Showing UI. It will show the previous showing UI if any exist.
+        /// Default UI is never hidden, as nothing would be left to show.
         /// </summary>
         public virtual void HideCurUI()
         {
-            if (uiStack.TryPop(out TCore curUI) && curUI != null)
+            // Default UI is the root of the navigation, so don't hide it
+            if (defaultUI != null && uiStack.TryPeek(out TCore topUI) && topUI == defaultUI)
             {
-                curUI.Hide();
-                Logger.Log($"Hide UI: {curUI.GetType()}");
+                Logger.Log("Default UI can't be hidden: {0}", defaultUI.GetType());
+                return;
+            }
 
-                if (uiStack.TryPeek(out TCore previousUI) && previousUI != null)
+            TCore curUI = PopUI();
+            if (curUI != null && uiStack.TryPeek(out TCore previousUI) && previousUI != null)
+            {
+                // If current closing ui is Screen, then show the UIs it was covering
+                if (curUI is Screen)
                 {
-                    // Set Current Sorting Order as per previous UI
-                    curSortingOrder = previousUI.Canvas.sortingOrder;
-
-                    // If current closing ui is Screen, then show previous UI if any
-                    if (curUI is Screen)
-                    {
-                        previousUI.Show();
-                        Logger.Log($"Show Previous UI: {previousUI.GetType()} with Sorting Order: {curSortingOrder}");
-                    }
-                    else
-                    {
-                        Logger.Log($"Top UI: {previousUI.GetType()} at Sorting Order: {curSortingOrder}");
-                    }
+                    ShowTopLayer();
                 }
                 else
                 {
-                    SetDefaultSortingOrder(curUI);
+                    Logger.Log("Top UI: {0} at Sorting Order: {1}", previousUI.GetType(), curSortingOrder);
                 }
             }
 
@@ -284,11 +297,22 @@ namespace NG.UINavigationSystem
         /// <param name="maxIteration">Maximum number of iterations to hide UIs</param>
         public virtual void HideAllUITill<T>(int maxIteration = 5) where T : TCore
         {
-            int i = 0;
-            while (GetCurrentShowingUI<T>() != null && i < maxIteration)
+            // If the given UI is not in the stack and default UI is also not in the stack, then show default UI.
+            // If default UI is in the stack, the loop below will hide all UIs till the default UI.
+            if (!IsUIInStack<T>() && defaultUI != null && !uiStack.Contains(defaultUI))
             {
+                ShowUI(defaultUI, null, true, -1);
+                return;
+            }
+
+            for (int i = 0; i < maxIteration && GetCurrentShowingUI<T>() == null; i++)
+            {
+                int stackCount = uiStack.Count;
                 HideCurUI();
-                i++;
+
+                // Stop if nothing was hidden, i.e. stack is empty or default UI is on top
+                if (uiStack.Count == stackCount)
+                    break;
             }
         }
 
@@ -323,6 +347,139 @@ namespace NG.UINavigationSystem
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Show the given UI. See <see cref="ShowUI{T}"/>.
+        /// </summary>
+        /// <param name="upcomingUi">UI to show</param>
+        /// <param name="parameters">UI parameters to pass along with showing screen</param>
+        /// <param name="resetStack">Whether to reset the UI stack</param>
+        /// <param name="sortingOrder">Sorting order for the UI</param>
+        protected virtual void ShowUI(TCore upcomingUi, IUIParameters parameters, bool resetStack, int sortingOrder)
+        {
+            resetStack |= upcomingUi == defaultUI;
+
+            // If ui is already on top, only set the parameters. Otherwise it would be in the stack twice and need two backs to close.
+            if (!resetStack && uiStack.TryPeek(out TCore topUI) && topUI == upcomingUi)
+            {
+                upcomingUi.SetParameters(parameters);
+                Logger.Log("UI is already on top: {0}", upcomingUi.GetType());
+                return;
+            }
+
+            // If upcoming ui is Screen, then hide current Screen and all UIs above it.
+            // On resetting the stack, hide them too, as they won't be in the stack anymore.
+            if (resetStack || upcomingUi is Screen)
+            {
+                HideTopLayer(upcomingUi);
+            }
+
+            // Reset Stack if needed
+            if (resetStack)
+            {
+                uiStack.Clear();
+                if (sortingOrder < 0)
+                    SetDefaultSortingOrder(upcomingUi);
+            }
+            else if (curSortingOrder == -1)
+            {
+                SetDefaultSortingOrder(upcomingUi);
+            }
+
+            // Set Current Sorting Order
+            curSortingOrder = sortingOrder >= 0 ? sortingOrder : ++curSortingOrder;
+
+            // Show the new ui
+            uiStack.Push(upcomingUi);
+            upcomingUi.Show(parameters, curSortingOrder);
+            Logger.Log("Show UI: {0} with Sorting Order: {1}", upcomingUi.GetType(), curSortingOrder);
+
+            // Notify listeners about the change
+            OnChangeCurShowingUI?.Invoke(upcomingUi);
+        }
+
+        /// <summary>
+        /// Remove the top UI from the stack and hide it. Current sorting order will be set as per the UI below it.
+        /// It doesn't show the UIs below it.
+        /// </summary>
+        /// <returns>Removed UI, or null if stack is empty</returns>
+        protected virtual TCore PopUI()
+        {
+            if (!uiStack.TryPop(out TCore curUI))
+                return null;
+
+            HideUI(curUI);
+
+            // Set Current Sorting Order as per previous UI
+            if (uiStack.TryPeek(out TCore previousUI) && previousUI != null)
+                curSortingOrder = previousUI.Canvas.sortingOrder;
+            else
+                SetDefaultSortingOrder(curUI);
+
+            return curUI;
+        }
+
+        /// <summary>
+        /// Get the top layer of the stack, from top to bottom. It's the top UI and all UIs below it till the top most Screen (included).
+        /// These are the UIs visible on the screen, as the top most Screen hides all UIs below it.
+        /// </summary>
+        /// <returns>UIs of the top layer, from top to bottom</returns>
+        protected virtual List<TCore> GetTopLayer()
+        {
+            // Copy is used, as showing or hiding UI can trigger navigation (e.g. from OnEnable/OnDisable) which modifies the stack
+            List<TCore> topLayer = new();
+            foreach (TCore ui in uiStack)
+            {
+                topLayer.Add(ui);
+                if (ui is Screen)
+                    break;
+            }
+            return topLayer;
+        }
+
+        /// <summary>
+        /// Hide all UIs of the top layer. See <see cref="GetTopLayer"/>.
+        /// </summary>
+        /// <param name="exceptUI">UI to keep showing, e.g. UI which is going to be shown</param>
+        protected virtual void HideTopLayer(TCore exceptUI = null)
+        {
+            foreach (TCore ui in GetTopLayer())
+            {
+                if (ui != exceptUI)
+                    HideUI(ui);
+            }
+        }
+
+        /// <summary>
+        /// Show all UIs of the top layer again, from bottom to top. See <see cref="GetTopLayer"/>.
+        /// It is used on going back from a Screen. UIs will keep their sorting order and parameters.
+        /// </summary>
+        protected virtual void ShowTopLayer()
+        {
+            List<TCore> topLayer = GetTopLayer();
+            for (int i = topLayer.Count - 1; i >= 0; i--)
+            {
+                TCore ui = topLayer[i];
+                if (ui == null)
+                    continue;
+
+                ui.Reshow();
+                Logger.Log("Show Previous UI: {0} with Sorting Order: {1}", ui.GetType(), ui.Canvas.sortingOrder);
+            }
+        }
+
+        /// <summary>
+        /// Hide the given UI if it's showing.
+        /// </summary>
+        /// <param name="ui">UI to hide</param>
+        protected virtual void HideUI(TCore ui)
+        {
+            if (ui == null || !ui.gameObject.activeSelf)
+                return;
+
+            ui.Hide();
+            Logger.Log("Hide UI: {0}", ui.GetType());
         }
 
         /// <summary>

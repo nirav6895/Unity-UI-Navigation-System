@@ -8,5 +8,12 @@
     "name": "Nirav Patel",
     "email": "nirav6895@gmail.com",
     "url": "https://github.com/nirav6895"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "Basic Navigation Demo",
+      "description": "Menu scene with Screens, Popups and a Notification, showing navigation, in-scene and on-demand UI prefabs, back navigation and transitions.",
+      "path": "Samples~/BasicNavigationDemo"
+    }
+  ]
 }

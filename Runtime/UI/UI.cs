@@ -133,6 +133,21 @@ namespace NG.UINavigationSystem
         }
 
         /// <summary>
+        /// Called every time this UI is shown, including when it's shown again on going back to it.
+        /// It's called after <see cref="SetParameters"/> and before the open animation.
+        /// </summary>
+        protected virtual void OnShow()
+        {
+        }
+
+        /// <summary>
+        /// Called every time this UI is hidden, before the close animation.
+        /// </summary>
+        protected virtual void OnHide()
+        {
+        }
+
+        /// <summary>
         /// Defines the behavior when the close button is clicked. 
         /// </summary>
         protected abstract void OnClickCloseButton();
@@ -165,6 +180,19 @@ namespace NG.UINavigationSystem
                 Canvas.overrideSorting = false;
             }
             SetParameters(parameters);
+            OnShow();
+            Transition?.PlayOpenAnimation(TransitionParameters);
+            OnShown?.Invoke();
+        }
+
+        /// <summary>
+        /// Shows this UI again. This method is called by the navigation manager when going back to this UI.
+        /// It keeps the sorting order and the parameters which this UI was shown with, so <see cref="SetParameters"/> is not called.
+        /// </summary>
+        internal void Reshow()
+        {
+            gameObject.SetActive(true);
+            OnShow();
             Transition?.PlayOpenAnimation(TransitionParameters);
             OnShown?.Invoke();
         }
@@ -175,6 +203,7 @@ namespace NG.UINavigationSystem
         /// </summary>
         internal void Hide()
         {
+            OnHide();
             Transition?.PlayCloseAnimation(TransitionParameters, () =>
             {
                 gameObject.SetActive(false);

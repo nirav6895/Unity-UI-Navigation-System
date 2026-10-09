@@ -28,6 +28,18 @@ namespace NG.UINavigationSystem.Utilities
         }
 
         /// <summary>
+        /// Logs a formatted message to the Unity console if the LogLevel is set to Full.
+        /// Message is built only if it's going to be logged.
+        /// </summary>
+        /// <param name="format">The message format, e.g. "Show UI: {0} with Sorting Order: {1}".</param>
+        /// <param name="args">The arguments to format.</param>
+        public static void Log(string format, params object[] args)
+        {
+            if (LogLevel == LogLevel.Full)
+                Log(string.Format(format, args));
+        }
+
+        /// <summary>
         /// Logs a warning message to the Unity console if the LogLevel is set to Full or WarningsAndErrors.
         /// </summary>
         /// <param name="message">The message to log.</param>
@@ -38,7 +50,7 @@ namespace NG.UINavigationSystem.Utilities
         }
 
         /// <summary>
-        /// Logs an error message to the Unity console if the LogLevel is set to ErrorsOnly or Disable.
+        /// Logs an error message to the Unity console if the LogLevel is set to Full, WarningsAndErrors or ErrorsOnly.
         /// </summary>
         /// <param name="message">The message to log.</param>
         public static void LogError(string message)

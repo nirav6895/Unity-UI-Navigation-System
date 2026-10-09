@@ -33,6 +33,11 @@ namespace NG.UINavigationSystem
         /// Default Alpha Value of Raycast Blocker
         /// </Summary>
         private float defaultAlphaOfRaycastBlocker;
+
+        /// <Summary>
+        /// Transition of this Popup. Same instance is used for open and close, so it can stop its own previous animation.
+        /// </Summary>
+        private readonly PopupTransition transition = new();
         #endregion
 
 
@@ -44,7 +49,7 @@ namespace NG.UINavigationSystem
         {
             get
             {
-                return new PopupTransition();
+                return transition;
             }
         }
 

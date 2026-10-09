@@ -85,10 +85,10 @@ UINavigationManager<SNP>.Instance.HideCurUIOnlyIfMatch(this);
 ## 📂 Structure
 
 ```
-Packages/com.nirav.screen-navigation/
+com.ng.unity-ui-navigation-system/
 ├── Documentation/
 ├── Runtime/
-├── Samples/
+├── Samples~/
 ├── package.json
 ```
 
@@ -99,8 +99,10 @@ Packages/com.nirav.screen-navigation/
 A demo scene is included under:
 
 ```
-Samples/BasicNavigationDemo
+Samples~/BasicNavigationDemo
 ```
+
+It is not imported with the package. To use it, open Package Manager → Unity UI Navigation System → Samples → Import "Basic Navigation Demo".
 
 This demonstrates:
 - UI Navigation
@@ -131,7 +133,7 @@ This system follows:
 
 ## 📚 Documentation
 
-- [Documentation](./Packages/com.nirav.screen-navigation/Documentation~/Manual.md)
+- [Documentation](./Documentation/Manual.md)
 
 ---
 

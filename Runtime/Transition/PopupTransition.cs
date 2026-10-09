@@ -8,9 +8,24 @@ namespace NG.UINavigationSystem
 {
     /// <summary>
     /// Represents a transition effect for popup screens.
+    /// Use one instance per popup for both open and close animations, as it stops its own previous animation when a new one starts.
     /// </summary>
     public class PopupTransition : ITransition
     {
+        #region Variables
+        /// <summary>
+        /// Running animation of the content.
+        /// Only the animations of this transition are stopped, so other coroutines of the popup keep running.
+        /// </summary>
+        private Coroutine contentRoutine;
+
+        /// <summary>
+        /// Running animation of the raycast blocker.
+        /// </summary>
+        private Coroutine raycastBlockerRoutine;
+        #endregion
+
+
         #region Methods
         /// <Summary> 
         /// Plays PopUp Open Animation
@@ -22,13 +37,13 @@ namespace NG.UINavigationSystem
                 return;
             }
 
-            // Stop All Previous Animation
-            popupTransitionParameters.monoBehaviour.StopAllCoroutines();
+            // Stop Previous Animation
+            StopAnimations(popupTransitionParameters.monoBehaviour);
 
             // Show PopUp Animation of Content by scaling
             if (popupTransitionParameters.content != null)
             {
-                popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.OpenCloseAnimationTime, (value) =>
+                contentRoutine = popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.OpenCloseAnimationTime, (value) =>
                 {
                     popupTransitionParameters.content.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, value);
                 }));
@@ -37,7 +52,7 @@ namespace NG.UINavigationSystem
             // Show Fadeout Animation of Black Transparent Raycast Blocker
             if (popupTransitionParameters.raycastBlocker != null)
             {
-                popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.RaycastBlockerFadeTime, (value) =>
+                raycastBlockerRoutine = popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.RaycastBlockerFadeTime, (value) =>
                 {
                     Color tempColor = popupTransitionParameters.raycastBlocker.color;
                     tempColor.a = Mathf.Lerp(0, popupTransitionParameters.defaultAlphaOfRaycastBlocker, value);
@@ -58,13 +73,25 @@ namespace NG.UINavigationSystem
                 return;
             }
 
-            // Stop All Previous Animation
-            popupTransitionParameters.monoBehaviour.StopAllCoroutines();
+            // Stop Previous Animation
+            StopAnimations(popupTransitionParameters.monoBehaviour);
+
+            // Show Fadeout Animation of Black Transparent Raycast Blocker
+            // It's started before the content animation, as callback can deactivate the popup and coroutine can't be started after that.
+            if (popupTransitionParameters.raycastBlocker != null)
+            {
+                raycastBlockerRoutine = popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.RaycastBlockerFadeTime, (value) =>
+                {
+                    Color tempColor = popupTransitionParameters.raycastBlocker.color;
+                    tempColor.a = Mathf.Lerp(popupTransitionParameters.defaultAlphaOfRaycastBlocker, 0, value);
+                    popupTransitionParameters.raycastBlocker.color = tempColor;
+                }));
+            }
 
             // Show PopUp Animation of Content by scaling
             if (popupTransitionParameters.content != null)
             {
-                popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.OpenCloseAnimationTime,
+                contentRoutine = popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.OpenCloseAnimationTime,
                     onUpdate: (value) =>
                     {
                         popupTransitionParameters.content.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, value);
@@ -80,17 +107,22 @@ namespace NG.UINavigationSystem
             {
                 callback?.Invoke();
             }
+        }
 
-            // Show Fadeout Animation of Black Transparent Raycast Blocker
-            if (popupTransitionParameters.raycastBlocker != null)
-            {
-                popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.RaycastBlockerFadeTime, (value) =>
-                {
-                    Color tempColor = popupTransitionParameters.raycastBlocker.color;
-                    tempColor.a = Mathf.Lerp(popupTransitionParameters.defaultAlphaOfRaycastBlocker, 0, value);
-                    popupTransitionParameters.raycastBlocker.color = tempColor;
-                }));
-            }
+        /// <summary>
+        /// Stops the running animations of this transition.
+        /// </summary>
+        /// <param name="monoBehaviour">MonoBehaviour on which the animations were started.</param>
+        private void StopAnimations(MonoBehaviour monoBehaviour)
+        {
+            if (contentRoutine != null)
+                monoBehaviour.StopCoroutine(contentRoutine);
+
+            if (raycastBlockerRoutine != null)
+                monoBehaviour.StopCoroutine(raycastBlockerRoutine);
+
+            contentRoutine = null;
+            raycastBlockerRoutine = null;
         }
 
         /// <summary>

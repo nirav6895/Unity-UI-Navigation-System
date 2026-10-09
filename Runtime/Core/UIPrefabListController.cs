@@ -50,7 +50,7 @@ namespace NG.UINavigationSystem
             Instance = this;
 
             if (uiRoot != null)
-                allExistingUIs = uiRoot.GetComponentsInChildren<Screen>(true);
+                allExistingUIs = uiRoot.GetComponentsInChildren<UI>(true);
         }
 
         /// <summary>
