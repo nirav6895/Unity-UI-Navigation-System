@@ -330,15 +330,12 @@ namespace NG.UINavigationSystem
             }
             return false;
         }
-        #endregion
 
-
-        #region Internal & Protected Virtual Methods
         /// <summary>
         /// Called when the device back key is pressed.
         /// </summary>
         /// <returns>Whether the back key was handled</returns>
-        internal virtual bool OnPressedDeviceBackKey()
+        public virtual bool OnPressedDeviceBackKey()
         {
             if (uiStack.TryPeek(out TCore curUI) && curUI != null)
             {
@@ -348,7 +345,10 @@ namespace NG.UINavigationSystem
 
             return false;
         }
+        #endregion
 
+
+        #region Internal & Protected Virtual Methods
         /// <summary>
         /// Show the given UI. See <see cref="ShowUI{T}"/>.
         /// </summary>
