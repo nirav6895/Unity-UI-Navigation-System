@@ -20,7 +20,7 @@ namespace NG.UINavigationSystem
         /// <summary>
         /// The content GameObject of the popup screen that will be animated during the transition.
         /// </summary>
-        public GameObject content;
+        public RectTransform content;
 
         /// <summary>
         /// The Image component of the raycast blocker that will be animated during the transition.

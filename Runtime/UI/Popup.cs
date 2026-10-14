@@ -24,7 +24,7 @@ namespace NG.UINavigationSystem
         /// <Summary> 
         /// Content of PopUp which can be animated. This should not include black transparent raycast blocker.
         /// </Summary>
-        [SerializeField] protected GameObject content;
+        [SerializeField] protected RectTransform content;
         #endregion
 
 

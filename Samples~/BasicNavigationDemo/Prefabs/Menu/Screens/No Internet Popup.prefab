@@ -332,6 +332,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -369,7 +370,7 @@ MonoBehaviour:
   closeButton: {fileID: 7454989249112711548}
   AllowBackKey: 1
   raycastBlocker: {fileID: 8652431320224670371}
-  content: {fileID: 1294613787352654680}
+  content: {fileID: 5243857191119440808}
   backKeyNotAllowedText: {fileID: 4180495185713930931}
 --- !u!1 &5664685866471276806
 GameObject:

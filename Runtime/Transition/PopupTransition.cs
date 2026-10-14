@@ -45,7 +45,7 @@ namespace NG.UINavigationSystem
             {
                 contentRoutine = popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.OpenCloseAnimationTime, (value) =>
                 {
-                    popupTransitionParameters.content.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, value);
+                    popupTransitionParameters.content.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, value);
                 }));
             }
 
@@ -94,11 +94,11 @@ namespace NG.UINavigationSystem
                 contentRoutine = popupTransitionParameters.monoBehaviour.StartCoroutine(TweenRoutine(Configurations.Popup.OpenCloseAnimationTime,
                     onUpdate: (value) =>
                     {
-                        popupTransitionParameters.content.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, value);
+                        popupTransitionParameters.content.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, value);
                     },
                     onComplete: () =>
                     {
-                        popupTransitionParameters.content.transform.localScale = Vector3.one;
+                        popupTransitionParameters.content.localScale = Vector3.one;
                         popupTransitionParameters.monoBehaviour.gameObject.SetActive(false);
                         callback?.Invoke();
                     }));
