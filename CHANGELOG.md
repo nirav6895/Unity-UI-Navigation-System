@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [Unreleased]
+## [1.1.0] - 2026-11-03
 
 ### Added
 - `UINavigationManager.ReplaceUI<T>()` to replace the current UI without growing the stack
@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file.
 - Popup transition was stopping all coroutines of the popup
 - Log messages were built even when logs are disabled
 - `SetDefaultUI<T>()` was throwing NullReferenceException when UI is not found
+- Static state (navigation stacks and `OnChangeCurShowingUI` listeners) was kept between Play sessions when Domain Reload is disabled. It's now reset when Play Mode starts
+- `UIPrefabListController.Instance` is cleared when the controller is destroyed
 
 ## [1.0.0] - 2026-05-05
 

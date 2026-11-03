@@ -90,10 +90,14 @@ namespace NG.UINavigationSystem
 
         /// <summary>
         /// Destroy the objects created by the swipe back gesture.
+        /// Clears the Instance if it's this object, so a destroyed controller isn't kept as Instance.
         /// </summary>
         protected virtual void OnDestroy()
         {
             swipeBackGesture.Dispose();
+
+            if (Instance == this)
+                Instance = null;
         }
         #endregion
 
@@ -163,6 +167,18 @@ namespace NG.UINavigationSystem
                 // Handle Device Back Key Pressed
                 UINavigationManager<SNP>.Instance.OnPressedDeviceBackKey();
             }
+        }
+        #endregion
+
+
+        #region Private Methods
+        /// <summary>
+        /// Clears the Instance when Play Mode starts, for when Domain Reload is disabled.
+        /// </summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticState()
+        {
+            Instance = null;
         }
         #endregion
     }

@@ -59,7 +59,7 @@ This package is built with production use-cases in mind and can be integrated in
 Open Unity → Package Manager → Add package from Git URL:
 
 ```
-https://github.com/nirav6895/Unity-UI-Navigation-System.git
+https://github.com/nirav6895/Unity-UI-Navigation-System.git#v1.1.0
 ```
 
 ---

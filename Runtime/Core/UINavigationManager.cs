@@ -71,6 +71,15 @@ namespace NG.UINavigationSystem
             uiStack = new();
             allUIs = new();
         }
+
+        /// <summary>
+        /// Registers the reset of this manager's static state, which runs every time Play Mode starts.
+        /// Each closed type (e.g. UINavigationManager&lt;SNP&gt;, UINavigationManager&lt;Notification&gt;) registers its own.
+        /// </summary>
+        static UINavigationManager()
+        {
+            StaticStateReset.Register(ResetStaticState);
+        }
         #endregion
 
 
@@ -489,6 +498,19 @@ namespace NG.UINavigationSystem
         protected virtual void SetDefaultSortingOrder(TCore uiType)
         {
             curSortingOrder = uiType is SNP ? Configurations.DefaultSortingOrderOfSNP : Configurations.DefaultSortingOrderOfNotification;
+        }
+        #endregion
+
+
+        #region Private Methods
+        /// <summary>
+        /// Drops the instance (and with it the stack of UIs from the previous Play session) and the listeners of
+        /// <see cref="OnChangeCurShowingUI"/>. Called by <see cref="StaticStateReset"/> when Play Mode starts.
+        /// </summary>
+        private static void ResetStaticState()
+        {
+            instance = null;
+            OnChangeCurShowingUI = null;
         }
         #endregion
     }
