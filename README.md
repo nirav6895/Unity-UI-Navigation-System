@@ -42,6 +42,7 @@ This package is built with production use-cases in mind and can be integrated in
 ### 🔙 Back Navigation
 - Android back button support
 - Escape key support (PC)
+- iOS edge swipe back gesture (left and/or right edge)
 - Unified navigation handling
 
 ### 🧱 Architecture

@@ -85,6 +85,24 @@ UINavigationManager<Notification>.Instance.ShowUI<NoInternetNotification>();
 
 ---
 
+## 👆 Swipe Back (iOS)
+
+On iOS, swiping from the left edge to the right, or from the right edge to the left, works same as the device back key. It calls `OnPressedDeviceBackKey()` of the current UI, so overriding it works for the swipe too.
+
+The UI doesn't move with the finger. It goes back on releasing the finger, if the finger moved a quarter of the screen width or flicked.
+
+Configure it at the start of the app:
+```csharp
+Configurations.SwipeBack.AllowLeftEdge = true;   // Native iOS gesture. Default: true
+Configurations.SwipeBack.AllowRightEdge = false; // Default: false
+Configurations.SwipeBack.EdgeWidth = 24f;        // Width of the edge area in points, where the swipe has to start. Default: 24
+```
+
+To test it in the Editor, switch the build target to iOS and use the Device Simulator.
+
+
+---
+
 ## ⚙️ Best Practices
 
 - Keep UI logic separate from business logic

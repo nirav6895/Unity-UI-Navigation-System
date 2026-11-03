@@ -67,5 +67,27 @@ namespace NG.UINavigationSystem
             /// </summary>
             public static bool AllowDeviceBackKey { get; set; } = false;
         }
+
+        /// <summary>
+        /// Configurations related to the edge swipe gesture to go back. It works on iOS only.
+        /// Swiping from the edge works same as the device back key. It goes back on releasing the finger, if the finger moved enough or flicked.
+        /// </summary>
+        public static class SwipeBack
+        {
+            /// <summary>
+            /// Allow swiping from the left edge to the right to go back. It's the native iOS gesture.
+            /// </summary>
+            public static bool AllowLeftEdge { get; set; } = false;
+
+            /// <summary>
+            /// Allow swiping from the right edge to the left to go back.
+            /// </summary>
+            public static bool AllowRightEdge { get; set; } = false;
+
+            /// <summary>
+            /// Width of the edge area in points, where the swipe has to start.
+            /// </summary>
+            public static float EdgeWidth { get; set; } = 24f;
+        }
     }
 }

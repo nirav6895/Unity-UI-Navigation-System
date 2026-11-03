@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - `UINavigationManager.ReplaceUI<T>()` to replace the current UI without growing the stack
 - Virtual `OnShow()` / `OnHide()` hooks in `UI`
+- iOS edge swipe gesture to go back (same as the device back key), configurable from `Configurations.SwipeBack` (left / right edge)
 
 ### Changed
 - Default UI is never hidden by `HideCurUI()` (close button / device back key) and never removed by `ReplaceUI<T>()`

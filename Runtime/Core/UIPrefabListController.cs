@@ -30,6 +30,11 @@ namespace NG.UINavigationSystem
         /// All Existing UIs in the scene.
         /// </summary>
         protected UI[] allExistingUIs;
+
+        /// <summary>
+        /// Edge swipe gesture to go back. It's used on iOS only, see <see cref="Configurations.SwipeBack"/>.
+        /// </summary>
+        private readonly SwipeBackGesture swipeBackGesture = new();
         #endregion
 
 
@@ -55,9 +60,17 @@ namespace NG.UINavigationSystem
 
         /// <summary>
         /// If AllowDeviceBackKey is true in Configurations, check if the device back key is pressed and call OnPressedDeviceBackKey() method.
+        /// On iOS, edge swipe gesture also calls OnPressedDeviceBackKey() method. See <see cref="Configurations.SwipeBack"/>.
         /// </summary>
         protected virtual void Update()
         {
+#if UNITY_IOS
+            if (swipeBackGesture.Update())
+            {
+                OnPressedDeviceBackKey();
+            }
+#endif
+
             if (Configurations.AllowDeviceBackKey)
             {
 #if ENABLE_INPUT_SYSTEM
@@ -73,6 +86,14 @@ namespace NG.UINavigationSystem
                 }
 #endif
             }
+        }
+
+        /// <summary>
+        /// Destroy the objects created by the swipe back gesture.
+        /// </summary>
+        protected virtual void OnDestroy()
+        {
+            swipeBackGesture.Dispose();
         }
         #endregion
 
