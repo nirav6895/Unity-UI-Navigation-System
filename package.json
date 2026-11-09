@@ -9,6 +9,8 @@
     "email": "nirav6895@gmail.com",
     "url": "https://github.com/nirav6895"
   },
+  "license": "MIT",
+  "licensesUrl": "https://github.com/nirav6895/Unity-UI-Navigation-System/blob/main/LICENSE.md",
   "samples": [
     {
       "displayName": "Basic Navigation Demo",
