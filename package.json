@@ -1,7 +1,7 @@
 {
   "name": "com.ng.unity-ui-navigation-system",
   "displayName": "Unity UI Navigation System",
-  "version": "1.2",
+  "version": "1.2.0",
   "unity": "2021.3",
   "description": "UI (Screens, Popups & Notification) Navigation framework for Unity. Handles Back functionality, Device Back Key Functionality, Screen Transitions, UI Stacking and more.",
   "author": {
