@@ -127,6 +127,7 @@ namespace NG.UINavigationSystem
 
         /// <summary>
         /// A helper method to perform tweening over a specified duration, invoking update and completion callbacks.
+        /// It uses unscaled time, so popups animate while the game is paused (Time.timeScale = 0), e.g. a pause menu.
         /// </summary>
         /// <param name="duration">The duration of the tween.</param>
         /// <param name="onUpdate">The callback to invoke during the tween.</param>
@@ -137,7 +138,7 @@ namespace NG.UINavigationSystem
             float elapsed = 0f;
             while (elapsed < duration)
             {
-                elapsed += Time.deltaTime;
+                elapsed += Time.unscaledDeltaTime;
                 float t = Mathf.Clamp01(elapsed / duration);
 
                 float smoothedT = Mathf.SmoothStep(0f, 1f, t);

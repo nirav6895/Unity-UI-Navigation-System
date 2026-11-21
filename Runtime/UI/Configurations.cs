@@ -42,12 +42,12 @@ namespace NG.UINavigationSystem
         public static class Popup
         {
             /// <Summary> 
-            /// Animation time of open/close for Popup
+            /// Animation time of open/close for Popup, in unscaled seconds (it plays while the game is paused)
             /// </Summary>
             public static float OpenCloseAnimationTime = 0.25f;
 
             /// <Summary> 
-            /// Animation time of Raycast Blocker fade in/out for Popup
+            /// Animation time of Raycast Blocker fade in/out for Popup, in unscaled seconds
             /// </Summary>
             public static float RaycastBlockerFadeTime = 0.25f;
         }
@@ -58,7 +58,7 @@ namespace NG.UINavigationSystem
         public static class Notification
         {
             /// <Summary> 
-            /// Show time duration of Notification before auto close
+            /// Show time duration of Notification before auto close, in unscaled seconds (it closes while the game is paused)
             /// </Summary>
             public static float ShowTime { get; set; } = 2f;
 

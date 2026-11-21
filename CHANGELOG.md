@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.2.1] - 2026-11-21
+
+### Fixed
+- Popups stayed invisible while the game is paused (`Time.timeScale = 0`), e.g. a pause menu: their open/close animation used scaled time. It now uses unscaled time
+- Notifications never closed automatically while the game is paused. The auto close now waits `Configurations.Notification.ShowTime` in unscaled time
+- Removed the stray `Samples.meta`, which made Unity warn that the meta file exists but its folder can't be found in every project that installs the package
+- README install URL pointed to an old version
+
+## [1.2.0] - 2026-11-10
+
+### Added
+- MIT license (`LICENSE.md`), and the license in `package.json`
+
 ## [1.1.0] - 2026-11-03
 
 ### Added

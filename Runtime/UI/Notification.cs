@@ -1,4 +1,6 @@
 #region Using
+using System.Collections;
+using UnityEngine;
 #endregion
 
 namespace NG.UINavigationSystem
@@ -16,9 +18,18 @@ namespace NG.UINavigationSystem
         #endregion
 
 
+        #region Private Variables
+        /// <summary>
+        /// Running automatic close of this Notification.
+        /// </summary>
+        private Coroutine autoCloseRoutine;
+        #endregion
+
+
         #region Overridden Methods
         /// <summary>
         /// Overridden to automatically close the notification after some time defined in Configurations.Notification.ShowTime. 
+        /// It uses unscaled time, so it also closes while the game is paused (Time.timeScale = 0).
         /// You can also close the notification by clicking the close button or pressing the device back key.
         /// </summary>
         protected override void OnEnable()
@@ -26,7 +37,7 @@ namespace NG.UINavigationSystem
             base.OnEnable();
 
             // Close notification automatically after some time
-            Invoke(nameof(OnClickCloseButton), Configurations.Notification.ShowTime);
+            autoCloseRoutine = StartCoroutine(AutoCloseRoutine());
         }
 
         /// <summary>
@@ -37,7 +48,11 @@ namespace NG.UINavigationSystem
             base.OnDisable();
 
             // Cancel automatic close if notification is disabled before time
-            CancelInvoke(nameof(OnClickCloseButton));
+            if (autoCloseRoutine != null)
+            {
+                StopCoroutine(autoCloseRoutine);
+                autoCloseRoutine = null;
+            }
         }
 
         /// <summary>
@@ -60,6 +75,20 @@ namespace NG.UINavigationSystem
                 return;
 
             UINavigationManager<Notification>.Instance.HideCurUIOnlyIfMatch(this);
+        }
+        #endregion
+
+
+        #region Private Methods
+        /// <summary>
+        /// Closes this Notification after Configurations.Notification.ShowTime, in unscaled time.
+        /// </summary>
+        private IEnumerator AutoCloseRoutine()
+        {
+            yield return new WaitForSecondsRealtime(Configurations.Notification.ShowTime);
+
+            autoCloseRoutine = null;
+            OnClickCloseButton();
         }
         #endregion
     }
